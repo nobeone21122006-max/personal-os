@@ -158,8 +158,10 @@ for start in range(0, len(cells), 7):
             if info is None:
                 st.markdown('<div style="min-height:88px"></div>', unsafe_allow_html=True)
                 continue
-            if info["future"] and info["total"] == 0:
-                background, foreground, rate_text, sub = "#fbfbfd", "#9aa0b4", "—", "chưa có việc"
+            if info["future"]:
+                background, foreground = "#fbfbfd", "#7b8197"
+                rate_text = "—"
+                sub = f"{info['total']} việc sắp tới" if info["total"] else "chưa có việc"
             elif info["total"] == 0:
                 background, foreground, rate_text, sub = "#eef0f5", "#626a80", "0%", "không có việc"
             else:

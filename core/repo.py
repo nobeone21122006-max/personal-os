@@ -12,6 +12,7 @@ DEFAULT_FREE_HOURS = 3.0
 
 # Nhiệm vụ thói quen trong ngày nghỉ là "tùy chọn": chỉ được tính khi đã làm.
 COUNTABLE_SQL = "(optional = 0 OR done = 1)"
+HABIT_HORIZON_DAYS = 60
 
 
 # ============================ SETTINGS ============================
@@ -484,7 +485,8 @@ def ensure_habit_tasks(habit_id: int | None = None) -> int:
     if not habits:
         return 0
 
-    end = today()
+    # Tạo trước HABIT_HORIZON_DAYS ngày để lịch tương lai hiện đủ việc. Thống kê vẫn chỉ tính đến hôm nay.
+    end = today() + timedelta(days=HABIT_HORIZON_DAYS)
     rest = set(get_rest_days())
     created = 0
     for habit in habits:
