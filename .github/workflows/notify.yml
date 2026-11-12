@@ -1,0 +1,29 @@
+name: Nhắc việc Telegram
+
+# Lịch tính theo UTC. Giờ Hà Nội = UTC + 7:
+#   7:00 sáng  = 00:00 UTC   |   19:00 tối = 12:00 UTC
+# Chạy thêm vài lần trong ngày (00:30, 12:30) để bù khi GitHub chạy trễ.
+# Thông báo chỉ gửi một lần mỗi loại mỗi ngày, nên các lần chạy thêm không gây trùng.
+on:
+  schedule:
+    - cron: "0 0 * * *"
+    - cron: "30 0 * * *"
+    - cron: "0 12 * * *"
+    - cron: "30 12 * * *"
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Cài thư viện
+        run: pip install "psycopg[binary]>=3.1"
+      - name: Kiểm tra và gửi thông báo
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python notifier.py --once
